@@ -65,9 +65,12 @@ impl LinkGetRequest {
         }
 
         match handle.request(req) {
-            Ok(response) => Either::Left(response.map(move |msg| {
+            Ok(response) => {
+                Either::Left(response.map(move |msg| {
+                println!("response: {:?}", msg);
                 Ok(try_rtnl!(msg, RouteNetlinkMessage::NewLink))
-            })),
+            }))
+            },
             Err(e) => Either::Right(
                 future::err::<LinkMessage, Error>(e).into_stream(),
             ),
